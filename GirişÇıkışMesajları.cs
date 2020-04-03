@@ -1,4 +1,5 @@
-﻿using Rocket.API.Collections;
+﻿using System.Linq;
+using Rocket.API.Collections;
 using Rocket.Core.Plugins;
 using Rocket.Unturned;
 using Rocket.Unturned.Player;
@@ -35,10 +36,8 @@ namespace DaeGirisCikisMesajlari
 		{
 			if (Configuration.Instance.OyuncuSayısıAktif || Configuration.Instance.GirişMesajlarıAktif || Configuration.Instance.ÇıkışMesajlarıAktif)
             {
-                foreach (var steamOyuncu in Provider.clients)
+                foreach (var steamId in Provider.clients.Select(s => s.playerID.steamID))
                 {
-                    var steamId = steamOyuncu.playerID.steamID;
-
                     EffectManager.askEffectClearByID(Configuration.Instance.GirişEfektiIdsi, steamId);
                     EffectManager.askEffectClearByID(Configuration.Instance.ÇıkışEfektiIdsi, steamId);
                     EffectManager.askEffectClearByID(Configuration.Instance.OyuncuSayısıEfektIdsi, steamId);
@@ -57,11 +56,9 @@ namespace DaeGirisCikisMesajlari
         }
 
 		private void OyuncuBağlandığında(UnturnedPlayer oyuncu)
-		{
-			foreach (var steamOyuncu in Provider.clients)
-			{
-			    var steamId = steamOyuncu.playerID.steamID;
-				
+        {
+            foreach (var steamId in Provider.clients.Select(s => s.playerID.steamID))
+            {
                 if (Configuration.Instance.GirişMesajlarıAktif)
                 {
                     EffectManager.sendUIEffect(Configuration.Instance.GirişEfektiIdsi, 15963, steamId, true,
@@ -79,22 +76,20 @@ namespace DaeGirisCikisMesajlari
             {
                 foreach (var efektIdsi in Configuration.Instance.EfektIdleri)
                 {
-                    var anahtar = efektIdsi > short.MaxValue ?
-                        (short)(efektIdsi - short.MaxValue + 1) :
-                        (short)efektIdsi;
+                    var anahtar = (short)(efektIdsi > short.MaxValue
+                        ? efektIdsi - short.MaxValue - 1
+                        : efektIdsi);
 
                     EffectManager.sendUIEffect(efektIdsi, anahtar, oyuncu.CSteamID, true);
                 }
             }
-		}
+        }
 
 		private void OyuncuAyrıldığında(UnturnedPlayer oyuncu)
-		{
-		    foreach (var steamOyuncu in Provider.clients)
-		    {
-		        var steamId = steamOyuncu.playerID.steamID;
-				
-		        if (Configuration.Instance.ÇıkışMesajlarıAktif)
+        {
+            foreach (var steamId in Provider.clients.Select(steamOyuncu => steamOyuncu.playerID.steamID))
+            {
+                if (Configuration.Instance.ÇıkışMesajlarıAktif)
                 {
                     Color renk;
                     try
@@ -116,7 +111,7 @@ namespace DaeGirisCikisMesajlari
                         $"<color=#{Configuration.Instance.MevcutOyuncuSayısıRengi}>{Provider.clients.Count - 1}</color>/<color=#{Configuration.Instance.MaksimumOyuncuSayısıRengi}>{Provider.maxPlayers}</color>");
                 }
             }
-		}
+        }
 		
 		public override TranslationList DefaultTranslations => new TranslationList
 	    {
