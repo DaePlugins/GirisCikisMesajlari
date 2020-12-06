@@ -8,11 +8,11 @@ using UnityEngine;
 
 namespace DaeGirisCikisMesajlari
 {
-	public class GirişÇıkışMesajları : RocketPlugin<GirişÇıkışMesajlarıYapılandırma>
-	{
-		protected override void Load()
-		{
-			if (Configuration.Instance.OyuncuSayısıAktif)
+    public class GirişÇıkışMesajları : RocketPlugin<GirişÇıkışMesajlarıYapılandırma>
+    {
+        protected override void Load()
+        {
+            if (Configuration.Instance.OyuncuSayısıAktif)
             {
                 foreach (var steamOyuncu in Provider.clients)
                 {
@@ -32,9 +32,9 @@ namespace DaeGirisCikisMesajlari
             }
         }
 
-		protected override void Unload()
-		{
-			if (Configuration.Instance.OyuncuSayısıAktif || Configuration.Instance.GirişMesajlarıAktif || Configuration.Instance.ÇıkışMesajlarıAktif)
+        protected override void Unload()
+        {
+            if (Configuration.Instance.OyuncuSayısıAktif || Configuration.Instance.GirişMesajlarıAktif || Configuration.Instance.ÇıkışMesajlarıAktif)
             {
                 foreach (var steamId in Provider.clients.Select(s => s.playerID.steamID))
                 {
@@ -55,7 +55,7 @@ namespace DaeGirisCikisMesajlari
             }
         }
 
-		private void OyuncuBağlandığında(UnturnedPlayer oyuncu)
+        private void OyuncuBağlandığında(UnturnedPlayer oyuncu)
         {
             foreach (var steamId in Provider.clients.Select(s => s.playerID.steamID))
             {
@@ -85,7 +85,7 @@ namespace DaeGirisCikisMesajlari
             }
         }
 
-		private void OyuncuAyrıldığında(UnturnedPlayer oyuncu)
+        private void OyuncuAyrıldığında(UnturnedPlayer oyuncu)
         {
             foreach (var steamId in Provider.clients.Select(steamOyuncu => steamOyuncu.playerID.steamID))
             {
@@ -112,11 +112,11 @@ namespace DaeGirisCikisMesajlari
                 }
             }
         }
-		
-		public override TranslationList DefaultTranslations => new TranslationList
-	    {
-	        { "Giriş", "{0} sunucuya bağlandı." },
-	        { "Çıkış", "{0} sunucudan ayrıldı." }
-	    };
-	}
+        
+        public override TranslationList DefaultTranslations => new TranslationList
+        {
+            { "Giriş", "{0} sunucuya bağlandı." },
+            { "Çıkış", "{0} sunucudan ayrıldı." }
+        };
+    }
 }
